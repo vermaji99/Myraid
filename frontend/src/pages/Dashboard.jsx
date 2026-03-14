@@ -37,7 +37,7 @@ const Dashboard = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get('/tasks', { params: query });
+      const { data } = await api.get('tasks', { params: query });
       setTasks(data.data);
       setPagination(data.pagination);
     } catch (err) {
@@ -50,7 +50,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
     try {
-      await api.delete(`/tasks/${id}`);
+      await api.delete(`tasks/${id}`);
       toast.success('Task deleted');
       fetchTasks();
     } catch (err) {

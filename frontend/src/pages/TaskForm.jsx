@@ -25,7 +25,7 @@ const TaskForm = () => {
 
   const fetchTask = async () => {
     try {
-      const { data } = await api.get(`/tasks/${id}`);
+      const { data } = await api.get(`tasks/${id}`);
       setFormData({
         title: data.data.title,
         description: data.data.description,
@@ -49,10 +49,10 @@ const TaskForm = () => {
     setLoading(true);
     try {
       if (isEdit) {
-        await api.put(`/tasks/${id}`, formData);
+        await api.put(`tasks/${id}`, formData);
         toast.success('Task updated successfully');
       } else {
-        await api.post('/tasks', formData);
+        await api.post('tasks', formData);
         toast.success('Task created successfully');
       }
       navigate('/');
