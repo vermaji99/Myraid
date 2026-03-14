@@ -11,15 +11,29 @@ const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://task-man-zqcm.onrender.com',
+      'https://task-man-zqcm.onrender.com/',
+      'http://localhost:5173',
+      'http://localhost:5175'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
 // CORS - Must be one of the first middlewares
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  })
-);
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json());
@@ -53,6 +67,14 @@ app.use(limiter);
 // Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
+
+// Catch-all for non-matching routes
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    message: `Not Found - ${req.originalUrl}`
+  });
+});
 
 // Error handler middleware
 app.use(errorHandler);

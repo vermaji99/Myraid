@@ -1,7 +1,18 @@
 import axios from 'axios';
 
+let baseUrl = import.meta.env.VITE_API_URL || 'https://taskmaster-backend.onrender.com/api/';
+
+// Ensure the baseURL always ends with /api/
+if (!baseUrl.endsWith('/api/')) {
+  if (baseUrl.endsWith('/')) {
+    baseUrl = baseUrl + 'api/';
+  } else {
+    baseUrl = baseUrl + '/api/';
+  }
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://taskmaster-backend.onrender.com/api/',
+  baseURL: baseUrl,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
