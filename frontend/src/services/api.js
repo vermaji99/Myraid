@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let baseUrl = import.meta.env.VITE_API_URL || 'https://taskmaster-backend-8nyw.onrender.com/api/';
+let baseUrl = import.meta.env.VITE_API_URL || 'https://taskmaster-backend.onrender.com/api/';
 
 // Ensure the baseURL always ends with /api/
 if (!baseUrl.endsWith('/api/')) {
