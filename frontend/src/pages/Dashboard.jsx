@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Loader2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LayoutGrid
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -29,7 +30,7 @@ const Dashboard = () => {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchTasks();
-    }, 500); // 500ms debounce
+    }, 500);
 
     return () => clearTimeout(delayDebounceFn);
   }, [query.page, query.status, query.search]);
@@ -60,171 +61,158 @@ const Dashboard = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed': return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      case 'in-progress': return <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />;
-      default: return <Clock className="h-5 w-5 text-yellow-500" />;
+      case 'completed': return <CheckCircle2 className="h-5 w-5 text-green-400" />;
+      case 'in-progress': return <Loader2 className="h-5 w-5 text-cyan-400 animate-spin" />;
+      default: return <Clock className="h-5 w-5 text-yellow-400" />;
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'completed': return 'bg-green-500/10 text-green-400 border-green-500/20';
+      case 'in-progress': return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+      default: return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
     }
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and track your daily productivity</p>
+          <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
+            <LayoutGrid className="h-8 w-8 text-cyan-400" />
+            Dashboard
+          </h1>
+          <p className="text-sm text-gray-400 mt-1">Manage and track your daily productivity</p>
         </div>
         <Link
           to="/tasks/new"
-          className="inline-flex items-center px-5 py-2.5 border border-transparent rounded-xl shadow-lg shadow-indigo-100 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all active:scale-[0.98]"
+          className="glass-button-primary inline-flex items-center"
         >
           <Plus className="h-5 w-5 mr-2" />
           Create Task
         </Link>
       </div>
 
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4 items-center justify-between backdrop-blur-sm bg-white/80">
-        <div className="relative w-full sm:w-80 group">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+      <div className="glass-card p-6 flex flex-col lg:flex-row gap-6 items-center justify-between">
+        <div className="relative w-full lg:w-96 group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
           </div>
           <input
             type="text"
-            className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl leading-5 bg-gray-50/50 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-all"
+            className="glass-input block w-full pl-11 pr-4 py-3 sm:text-sm"
             placeholder="Search your tasks..."
             value={query.search}
             onChange={(e) => setQuery({ ...query, search: e.target.value, page: 1 })}
           />
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="flex items-center gap-2 px-3 py-2 bg-gray-50/50 rounded-xl border border-gray-200">
-            <Filter className="h-4 w-4 text-gray-400" />
+        <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
+            <Filter className="h-4 w-4 text-cyan-400" />
             <select
-              className="bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-700 cursor-pointer pr-8"
+              className="bg-transparent text-sm font-bold text-gray-300 border-none focus:ring-0 cursor-pointer pr-8"
               value={query.status}
               onChange={(e) => setQuery({ ...query, status: e.target.value, page: 1 })}
             >
-              <option value="">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
+              <option value="" className="bg-[#161b22]">All Status</option>
+              <option value="pending" className="bg-[#161b22]">Pending</option>
+              <option value="in-progress" className="bg-[#161b22]">In Progress</option>
+              <option value="completed" className="bg-[#161b22]">Completed</option>
             </select>
           </div>
         </div>
       </div>
 
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-10 w-10 text-indigo-500 animate-spin" />
-          <p className="mt-4 text-sm text-gray-500 font-medium">Loading your tasks...</p>
+      {loading && tasks.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 glass-card">
+          <Loader2 className="h-12 w-12 text-cyan-400 animate-spin mb-4" />
+          <p className="text-gray-400 font-medium">Loading your tasks...</p>
         </div>
-      ) : tasks.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      ) : tasks.length === 0 ? (
+        <div className="text-center py-24 glass-card">
+          <div className="bg-white/5 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+            <Search className="h-10 w-10 text-gray-600" />
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">No tasks found</h3>
+          <p className="text-gray-400 max-w-xs mx-auto mb-8">
+            Try adjusting your search or filters to find what you're looking for.
+          </p>
+          <button 
+            onClick={() => setQuery({ page: 1, limit: 10, status: '', search: '' })}
+            className="glass-button-secondary"
+          >
+            Clear All Filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {tasks.map((task) => (
-            <div key={task._id} className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                    task.status === 'completed' ? 'bg-green-50 text-green-600' :
-                    task.status === 'in-progress' ? 'bg-blue-50 text-blue-600' : 'bg-yellow-50 text-yellow-600'
-                  }`}>
+            <div
+              key={task._id}
+              className="glass-card group hover:bg-white/[0.07] transition-all duration-300 hover:-translate-y-1 flex flex-col h-full overflow-hidden"
+            >
+              <div className="p-6 flex-grow">
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusBadge(task.status)}`}>
                     {task.status}
-                  </div>
-                  <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  </span>
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Link
                       to={`/tasks/edit/${task._id}`}
-                      className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                      className="p-2 bg-white/5 hover:bg-cyan-500/20 rounded-lg text-gray-400 hover:text-cyan-400 transition-all border border-white/5"
                     >
                       <Edit2 className="h-4 w-4" />
                     </Link>
                     <button
                       onClick={() => handleDelete(task._id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                      className="p-2 bg-white/5 hover:bg-red-500/20 rounded-lg text-gray-400 hover:text-red-400 transition-all border border-white/5"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                <h3 className="text-lg font-bold text-white mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">
                   {task.title}
                 </h3>
-                <p className="text-gray-500 text-sm line-clamp-3 mb-6 leading-relaxed">
+                <p className="text-gray-400 text-sm line-clamp-3 leading-relaxed mb-4">
                   {task.description}
                 </p>
               </div>
-              <div className="pt-4 border-t border-gray-50 flex items-center justify-between text-[11px] text-gray-400 font-medium">
-                <div className="flex items-center">
-                  <Clock className="h-3 w-3 mr-1" />
-                  {new Date(task.createdAt).toLocaleDateString()}
+              <div className="px-6 py-4 bg-black/20 border-t border-white/5 flex items-center justify-between">
+                <div className="flex items-center text-gray-500 text-[11px] font-bold uppercase tracking-wider">
+                  <Clock className="h-3.5 w-3.5 mr-1.5" />
+                  {new Date(task.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                 </div>
                 {getStatusIcon(task.status)}
               </div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-100">
-          <div className="mx-auto h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-            <Plus className="h-8 w-8 text-gray-300" />
-          </div>
-          <h3 className="text-lg font-bold text-gray-900">No tasks yet</h3>
-          <p className="text-gray-500 mt-1 max-w-xs mx-auto">Start by creating your first task to stay organized and productive.</p>
-          <Link
-            to="/tasks/new"
-            className="mt-6 inline-flex items-center px-4 py-2 text-sm font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-colors"
-          >
-            Add your first task
-          </Link>
-        </div>
       )}
 
       {pagination.pages > 1 && (
-        <div className="flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg sm:px-6">
-          <div className="flex justify-between flex-1 sm:hidden">
-            <button
-              onClick={() => setQuery({ ...query, page: query.page - 1 })}
-              disabled={query.page === 1}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => setQuery({ ...query, page: query.page + 1 })}
-              disabled={query.page === pagination.pages}
-              className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-            >
-              Next
-            </button>
+        <div className="flex items-center justify-center gap-4 mt-12 pb-8">
+          <button
+            onClick={() => setQuery({ ...query, page: Math.max(1, query.page - 1) })}
+            disabled={query.page === 1}
+            className="glass-button-secondary !p-3 disabled:opacity-30"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <div className="px-6 py-2.5 glass-card text-sm font-black text-white">
+            <span className="text-cyan-400">{query.page}</span>
+            <span className="mx-2 text-gray-600">/</span>
+            <span>{pagination.pages}</span>
           </div>
-          <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-gray-700">
-                Showing <span className="font-medium">{(query.page - 1) * query.limit + 1}</span> to{' '}
-                <span className="font-medium">
-                  {Math.min(query.page * query.limit, pagination.total)}
-                </span>{' '}
-                of <span className="font-medium">{pagination.total}</span> results
-              </p>
-            </div>
-            <div>
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button
-                  onClick={() => setQuery({ ...query, page: query.page - 1 })}
-                  disabled={query.page === 1}
-                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => setQuery({ ...query, page: query.page + 1 })}
-                  disabled={query.page === pagination.pages}
-                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </nav>
-            </div>
-          </div>
+          <button
+            onClick={() => setQuery({ ...query, page: Math.min(pagination.pages, query.page + 1) })}
+            disabled={query.page === pagination.pages}
+            className="glass-button-secondary !p-3 disabled:opacity-30"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
       )}
     </div>

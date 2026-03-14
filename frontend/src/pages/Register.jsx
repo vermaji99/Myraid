@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { User, Mail, Lock, UserPlus } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, Loader2 } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -34,35 +34,39 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100 backdrop-blur-sm bg-white/80">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div className="max-w-md w-full space-y-8 glass-card p-10 relative z-10 animate-in fade-in zoom-in duration-500">
         <div>
-          <div className="mx-auto h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <UserPlus className="h-6 w-6 text-white" />
+          <div className="mx-auto h-14 w-14 bg-cyan-500/20 border border-cyan-500/30 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/10">
+            <UserPlus className="h-7 w-7 text-cyan-400" />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-white tracking-tight">
             Create Account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-500">
+          <p className="mt-2 text-center text-sm text-gray-400">
             Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+            <Link to="/login" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
               Sign in here
             </Link>
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">Full Name</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                 </div>
                 <input
                   name="name"
                   type="text"
                   required
-                  className="appearance-none rounded-xl relative block w-full px-10 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-all bg-gray-50/50 hover:bg-gray-50"
+                  className="glass-input block w-full pl-11 pr-4 py-3 sm:text-sm"
                   placeholder="John Doe"
                   value={name}
                   onChange={onChange}
@@ -70,16 +74,16 @@ const Register = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">Email Address</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                 </div>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="appearance-none rounded-xl relative block w-full px-10 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-all bg-gray-50/50 hover:bg-gray-50"
+                  className="glass-input block w-full pl-11 pr-4 py-3 sm:text-sm"
                   placeholder="name@company.com"
                   value={email}
                   onChange={onChange}
@@ -87,16 +91,16 @@ const Register = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">Password</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-500 group-focus-within:text-cyan-400 transition-colors" />
                 </div>
                 <input
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-xl relative block w-full px-10 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-all bg-gray-50/50 hover:bg-gray-50"
+                  className="glass-input block w-full pl-11 pr-4 py-3 sm:text-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={onChange}
@@ -109,17 +113,16 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all shadow-lg shadow-indigo-100 active:scale-[0.98]"
+              className="glass-button-primary w-full flex justify-center items-center gap-2"
             >
               {loading ? (
-                <div className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
                   Creating account...
-                </div>
-              ) : 'Get Started Now'}
+                </>
+              ) : (
+                'Sign Up'
+              )}
             </button>
           </div>
         </form>

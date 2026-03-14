@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'react-hot-toast';
-import { Save, ArrowLeft, Loader2 } from 'lucide-react';
+import { Save, ArrowLeft, Loader2, ClipboardList } from 'lucide-react';
 
 const TaskForm = () => {
   const { id } = useParams();
@@ -65,48 +65,51 @@ const TaskForm = () => {
 
   if (fetching) {
     return (
-      <div className="flex justify-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className="flex flex-col items-center justify-center py-24 glass-card max-w-2xl mx-auto mt-12">
+        <Loader2 className="h-12 w-12 text-cyan-400 animate-spin mb-4" />
+        <p className="text-gray-400 font-medium">Fetching task details...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
+      <div className="mb-8">
         <Link
           to="/"
-          className="inline-flex items-center text-sm font-bold text-gray-500 hover:text-indigo-600 transition-colors group"
+          className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-cyan-400 transition-colors group"
         >
-          <div className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 mr-3 group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-all">
+          <div className="p-2 bg-white/5 rounded-xl border border-white/5 mr-3 group-hover:bg-cyan-500/10 group-hover:border-cyan-500/20 transition-all">
             <ArrowLeft className="h-4 w-4" />
           </div>
           Back to Dashboard
         </Link>
       </div>
 
-      <div className="bg-white shadow-xl shadow-indigo-100/20 border border-gray-100 rounded-3xl overflow-hidden">
-        <div className="bg-indigo-600 px-8 py-6">
-          <h1 className="text-2xl font-bold text-white">
-            {isEdit ? 'Update Task' : 'Create Task'}
-          </h1>
-          <p className="text-indigo-100 text-sm mt-1">
-            {isEdit ? 'Modify your existing task details' : 'Add a new task to your list'}
-          </p>
+      <div className="glass-card overflow-hidden">
+        <div className="bg-cyan-500/10 px-8 py-8 border-b border-white/5 flex items-center gap-5">
+          <div className="h-12 w-12 bg-cyan-500/20 rounded-xl flex items-center justify-center border border-cyan-500/30">
+            <ClipboardList className="h-6 w-6 text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-white">
+              {isEdit ? 'Update Task' : 'Create Task'}
+            </h1>
+            <p className="text-gray-400 text-sm mt-0.5">
+              {isEdit ? 'Modify your existing task details' : 'Add a new task to your list'}
+            </p>
+          </div>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="p-8 space-y-8">
+          <div className="space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-bold text-gray-700 mb-2 ml-1">
-                Task Title
-              </label>
+              <label className="block text-sm font-bold text-gray-300 mb-2 ml-1">Task Title</label>
               <input
                 type="text"
                 name="title"
-                id="title"
                 required
-                className="block w-full border border-gray-200 rounded-2xl shadow-sm py-3 px-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm bg-gray-50/50 hover:bg-gray-50 transition-all"
+                className="glass-input block w-full"
                 placeholder="What needs to be done?"
                 value={title}
                 onChange={onChange}
@@ -114,67 +117,63 @@ const TaskForm = () => {
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-bold text-gray-700 mb-2 ml-1">
-                Description
-              </label>
+              <label className="block text-sm font-bold text-gray-300 mb-2 ml-1">Description</label>
               <textarea
                 name="description"
-                id="description"
-                rows="5"
                 required
-                className="block w-full border border-gray-200 rounded-2xl shadow-sm py-3 px-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm bg-gray-50/50 hover:bg-gray-50 transition-all resize-none"
-                placeholder="Add more details about this task..."
+                rows="4"
+                className="glass-input block w-full resize-none"
+                placeholder="Provide some details about this task..."
                 value={description}
                 onChange={onChange}
-              ></textarea>
+              />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="status" className="block text-sm font-bold text-gray-700 mb-2 ml-1">
-                  Current Status
-                </label>
-                <div className="relative">
-                  <select
-                    name="status"
-                    id="status"
-                    className="block w-full pl-4 pr-10 py-3 text-base border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm rounded-2xl bg-gray-50/50 hover:bg-gray-50 appearance-none transition-all cursor-pointer"
-                    value={status}
-                    onChange={onChange}
+            <div>
+              <label className="block text-sm font-bold text-gray-300 mb-2 ml-1">Current Status</label>
+              <div className="grid grid-cols-3 gap-4">
+                {['pending', 'in-progress', 'completed'].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, status: s })}
+                    className={`py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider border transition-all ${
+                      status === s
+                        ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400 shadow-lg shadow-cyan-500/10'
+                        : 'bg-white/5 border-white/5 text-gray-500 hover:bg-white/10'
+                    }`}
                   >
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-                    <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                      <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                    </svg>
-                  </div>
-                </div>
+                    {s.replace('-', ' ')}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="pt-6 flex items-center justify-end space-x-4">
-            <Link
-              to="/"
-              className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Cancel
-            </Link>
+          <div className="pt-4 flex gap-4">
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center px-8 py-3 border border-transparent rounded-2xl shadow-lg shadow-indigo-100 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all active:scale-[0.98]"
+              className="glass-button-primary flex-grow flex justify-center items-center gap-2"
             >
               {loading ? (
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Saving...
+                </>
               ) : (
-                <Save className="h-5 w-5 mr-2" />
+                <>
+                  <Save className="h-5 w-5" />
+                  {isEdit ? 'Update Task' : 'Create Task'}
+                </>
               )}
-              {loading ? 'Saving Changes...' : isEdit ? 'Update Task' : 'Create Task'}
             </button>
+            <Link
+              to="/"
+              className="glass-button-secondary flex justify-center items-center"
+            >
+              Cancel
+            </Link>
           </div>
         </form>
       </div>

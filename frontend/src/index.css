@@ -2,18 +2,64 @@
 
 :root {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: #0d1117;
+  color: #e6edf3;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   width: 100%;
+  background: radial-gradient(circle at top left, #161b22 0%, #0d1117 100%);
+  background-attachment: fixed;
 }
 
 @layer base {
   input, textarea, select {
-    @apply focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all duration-200;
+    @apply focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 outline-none transition-all duration-300;
   }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl;
+  }
+  
+  .glass-input {
+    @apply bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-gray-400 focus:bg-white/10 transition-all;
+  }
+  
+  .glass-button-primary {
+    @apply bg-cyan-500/80 hover:bg-cyan-400 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg shadow-cyan-500/20 transition-all active:scale-95;
+  }
+
+  .glass-button-secondary {
+    @apply bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium py-2.5 px-6 rounded-xl transition-all active:scale-95;
+  }
+
+  .glass-nav {
+    @apply bg-black/20 backdrop-blur-md border-b border-white/5 sticky top-0 z-50;
+  }
+
+  .accent-cyan {
+    @apply text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)];
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }

@@ -16,10 +16,22 @@ function App() {
           position="top-right"
           toastOptions={{
             duration: 4000,
-            className: 'rounded-2xl font-bold text-sm shadow-xl border border-gray-100',
             style: {
+              background: '#161b22',
+              color: '#e6edf3',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              fontSize: '14px',
+              fontWeight: 'bold',
               padding: '16px 24px',
-            }
+            },
+            success: {
+              iconTheme: {
+                primary: '#22d3ee',
+                secondary: '#161b22',
+              },
+            },
           }}
         />
         <Routes>
