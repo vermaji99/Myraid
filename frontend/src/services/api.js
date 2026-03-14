@@ -19,6 +19,15 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to add token from localStorage as backup
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
@@ -26,6 +35,7 @@ api.interceptors.response.use(
     // Handle 401 Unauthorized errors globally
     if (error.response?.status === 401) {
       localStorage.removeItem('user');
+      localStorage.removeItem('token');
       // Optional: window.location.href = '/login'; 
       // But we'll let the protected routes handle the redirection
     }

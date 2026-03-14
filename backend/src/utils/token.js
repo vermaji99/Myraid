@@ -16,12 +16,13 @@ const sendTokenResponse = (user, statusCode, res) => {
   const options = {
     expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: true, // Always true for cross-domain cookies
+    sameSite: 'none', // Required for cross-domain cookies
   };
 
   res.status(statusCode).cookie('token', token, options).json({
     success: true,
+    token, // Send token in body as backup for cross-site cookies
     data: {
       _id: user._id,
       name: user.name,
