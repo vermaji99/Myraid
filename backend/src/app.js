@@ -11,17 +11,20 @@ const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
-const corsOptions = {
-  origin: true, // Allow all origins in production temporarily to debug
+// CORS - Simple and permissive for production debugging
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow all origins to resolve the blocking issue immediately
+    callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Cookie'],
   optionsSuccessStatus: 200
-};
+}));
 
-// CORS - Must be one of the first middlewares
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight requests for all routes
+// Explicit OPTIONS handler for all routes
+app.options('*', cors());
 
 // Body parser
 app.use(express.json());
