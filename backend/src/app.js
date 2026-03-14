@@ -12,31 +12,22 @@ const taskRoutes = require('./routes/taskRoutes');
 const app = express();
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'https://task-man-zqcm.onrender.com',
-      'https://task-man-zqcm.onrender.com/',
-      'http://localhost:5173',
-      'http://localhost:5175'
-    ];
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins in production temporarily to debug
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200
 };
 
 // CORS - Must be one of the first middlewares
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight requests for all routes
 
 // Body parser
 app.use(express.json());
+
+// Health check
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
 // Cookie parser
 app.use(cookieParser(process.env.COOKIE_SECRET));
